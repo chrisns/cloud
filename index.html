@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cns.me cloud</title>
+    <style>
+        /* Apply a fullscreen layout with flexbox */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 100px; /* Adjust this to make the cloud emoji larger or smaller */
+            background: linear-gradient(270deg, #ff1493, #ffe4e1, #ffffff);
+            background-size: 400% 400%;
+            animation: backgroundAnimation 15s ease infinite;
+            overflow: hidden; /* Prevent any scrollbars */
+        }
+
+        /* Animate the background color transitions */
+        @keyframes backgroundAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Style the cloud emoji */
+        .cloud {
+            font-size: 25vw; /* Responsive size, change vw to something else if needed */
+            line-height: 1;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="cloud">☁️</div>
+</body>
+</html>
