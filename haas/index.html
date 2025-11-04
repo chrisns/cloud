@@ -2,47 +2,614 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Hydration as a Service</title>
+    <title>Hydration as a Service - The Game</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-      body {
+      * {
         margin: 0;
-        background: white;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        overflow: hidden;
+        height: 100vh;
+        user-select: none;
+      }
+
+      #game-container {
+        position: relative;
+        width: 100vw;
         height: 100vh;
         overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 78.48 41.76" fill-rule="evenodd"><g transform="translate(-175.92,-630.69)" style="fill:%23ee0077;fill-opacity:1"><path d="m 216,637.41064 -10.07959,17.03907 c 0,0 -4.49277,8.32394 0.24023,13.43994 4.733,5.116 7.52183,4.48506 10.31983,4.56006 2.799,0.075 7.86835,-1.91124 9.83935,-6.71924 1.971,-4.809 1.15548,-6.02794 0.95948,-7.43994 -0.196,-1.413 -1.24095,-3.02706 -1.91895,-4.56006 C 224.68235,652.19747 216,637.41064 216,637.41064 Z m -6.48486,20.61182 c 0.0151,0.015 -0.12584,0.17918 -0.23584,0.98731 -0.176,1.293 -0.0715,2.37382 0.48047,3.84082 1.039,2.76 3.49059,2.33141 4.07959,2.39941 0.199,0.023 0.33123,0.93741 -0.23877,1.92041 -0.57,0.982 -4.28523,-0.65412 -5.76123,-3.12012 -1.249,-2.086 -0.47901,-6 -0.47901,-6 0,0 1.48795,-0.022 1.91895,0 0.16162,0.008 0.22681,-0.0368 0.23584,-0.0278 z" /><path d="m 201.36,669.09 -14.16,0.24 c 0,0 -11.28,-2.304 -11.28,-12.24 0,-8.191 9.733,-11.04 10.08,-11.04 0.328,0 2.039,-5.668 6.96,-6.72 5.646,-1.207 7.332,1.459 7.44,1.44 0.108,-0.019 6.845,-10.08 17.28,-10.08 12.199,0 20.4,11.343 20.4,14.64 0,0.407 2.4,-0.96 4.08,-0.96 6.094,0 12.24,5.501 12.24,12.72 0,7.606 -7.854,12.24 -12.48,12.24 -1.36,0 -12.96,-0.24 -12.96,-0.24 0,0 0.935,-2.21 1.44,-2.88 0.081,-0.107 12.399,-0.194 12.48,-0.24 0.249,-0.144 8.293,-1.549 8.16,-8.88 -0.133,-7.331 -5.651,-9.36 -8.64,-9.36 -4.396,0 -5.001,2.293 -5.76,2.16 -0.759,-0.134 -2.421,-15.6 -18.96,-15.6 -9.22,0 -13.999,7.529 -14.4,8.4 -0.401,0.871 -0.605,3.153 -1.2,3.36 -0.65,0.226 -3.377,-3.6 -7.68,-3.6 -2.144,0 -4.459,3.09 -4.8,4.08 -0.327,0.949 -0.735,2.282 -1.2,2.64 -0.355,0.273 -2.341,0.017 -3.84,0.48 -0.171,0.052 -5.28,2.264 -5.28,6 0,3.736 1.087,6.686 4.32,8.64 3.233,1.953 5.016,1.92 9.12,1.92 4.104,0 7.888,0 8.16,0 0.272,0 1.216,2.002 1.2,2.4 -0.016,0.397 -0.72,0.48 -0.72,0.48 z" /></g></svg>');
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
       }
-      body::after {
-        content: '';
+
+      /* Start Screen */
+      #start-screen {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%);
-        mix-blend-mode: screen;
-        animation: sparkle 2s infinite;
-        pointer-events: none;
+        background: rgba(0, 0, 0, 0.9);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        color: white;
       }
-      @keyframes sparkle {
-        0%, 100% {
-          transform: scale(1.2);
-          opacity: 0.8;
+
+      #start-screen.hidden {
+        display: none;
+      }
+
+      #start-screen h1 {
+        font-size: 3em;
+        margin-bottom: 20px;
+        text-shadow: 0 0 20px #4fc3f7;
+      }
+
+      #start-screen .subtitle {
+        font-size: 1.2em;
+        margin-bottom: 30px;
+        color: #4fc3f7;
+      }
+
+      #start-screen .instructions {
+        max-width: 600px;
+        text-align: center;
+        margin-bottom: 30px;
+        line-height: 1.6;
+        padding: 0 20px;
+      }
+
+      #start-screen .instructions p {
+        margin-bottom: 10px;
+      }
+
+      .start-button {
+        padding: 15px 40px;
+        font-size: 1.5em;
+        background: linear-gradient(135deg, #4fc3f7, #2196f3);
+        border: none;
+        border-radius: 50px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+      }
+
+      .start-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(33, 150, 243, 0.6);
+      }
+
+      /* HUD */
+      #hud {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        right: 20px;
+        display: flex;
+        justify-content: space-between;
+        z-index: 100;
+        color: white;
+        font-size: 1.2em;
+        font-weight: bold;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .hud-item {
+        background: rgba(0, 0, 0, 0.5);
+        padding: 10px 20px;
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+      }
+
+      #combo {
+        color: #ffd700;
+        font-size: 1.5em;
+      }
+
+      /* Customer */
+      .customer {
+        position: absolute;
+        width: 120px;
+        height: 140px;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .customer:hover {
+        transform: scale(1.1);
+      }
+
+      .customer-avatar {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+        border-radius: 50%;
+        margin: 0 auto 10px;
+        position: relative;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .customer-face {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 2em;
+      }
+
+      .hydration-bar-container {
+        width: 100%;
+        height: 15px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 5px;
+      }
+
+      .hydration-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #4fc3f7, #2196f3);
+        width: 0%;
+        transition: width 0.3s;
+        box-shadow: 0 0 10px rgba(79, 195, 247, 0.8);
+      }
+
+      .patience-bar-container {
+        width: 100%;
+        height: 10px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 5px;
+        overflow: hidden;
+      }
+
+      .patience-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #ff4444, #ff8800);
+        width: 100%;
+        transition: width 0.1s linear;
+      }
+
+      /* Particles */
+      .water-particle {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: radial-gradient(circle, #4fc3f7, #2196f3);
+        border-radius: 50%;
+        pointer-events: none;
+        animation: float-up 1s ease-out forwards;
+        box-shadow: 0 0 10px rgba(79, 195, 247, 0.8);
+      }
+
+      @keyframes float-up {
+        to {
+          transform: translateY(-100px);
+          opacity: 0;
         }
-        50% {
-          transform: scale(1.5);
-          opacity: 1;
+      }
+
+      /* Game Over Screen */
+      #game-over-screen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        color: white;
+      }
+
+      #game-over-screen.show {
+        display: flex;
+      }
+
+      #game-over-screen h1 {
+        font-size: 3em;
+        margin-bottom: 20px;
+        color: #ff6b6b;
+      }
+
+      #game-over-screen .final-score {
+        font-size: 2em;
+        margin-bottom: 10px;
+        color: #4fc3f7;
+      }
+
+      #game-over-screen .high-score {
+        font-size: 1.5em;
+        margin-bottom: 30px;
+        color: #ffd700;
+      }
+
+      /* Click effect */
+      .click-effect {
+        position: absolute;
+        color: white;
+        font-size: 2em;
+        font-weight: bold;
+        pointer-events: none;
+        animation: rise-fade 1s ease-out forwards;
+        text-shadow: 0 0 10px rgba(79, 195, 247, 0.8);
+      }
+
+      @keyframes rise-fade {
+        to {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        #start-screen h1 {
+          font-size: 2em;
+        }
+
+        #start-screen .instructions {
+          font-size: 0.9em;
+        }
+
+        #hud {
+          font-size: 1em;
+        }
+
+        .customer {
+          width: 100px;
+          height: 120px;
+        }
+
+        .customer-avatar {
+          width: 60px;
+          height: 60px;
+        }
+
+        .customer-face {
+          font-size: 1.5em;
         }
       }
     </style>
   </head>
   <body>
+    <div id="game-container">
+      <!-- Start Screen -->
+      <div id="start-screen">
+        <h1>💧 Hydration as a Service 💧</h1>
+        <div class="subtitle">Keep Your Customers Hydrated!</div>
+        <div class="instructions">
+          <p><strong>How to Play:</strong></p>
+          <p>🎯 Click on thirsty customers to serve them water</p>
+          <p>💙 Fill their hydration bar before they get too impatient</p>
+          <p>⏱️ Watch the red patience bar - don't let it run out!</p>
+          <p>🏆 Build combos by hydrating customers quickly</p>
+          <p>❌ Game over if 5 customers leave dehydrated</p>
+        </div>
+        <button class="start-button" onclick="startGame()">Start Hydrating!</button>
+      </div>
+
+      <!-- HUD -->
+      <div id="hud">
+        <div class="hud-item">Score: <span id="score">0</span></div>
+        <div class="hud-item" id="combo" style="display: none;">Combo: x<span id="combo-count">0</span></div>
+        <div class="hud-item">Level: <span id="level">1</span></div>
+        <div class="hud-item">Missed: <span id="missed">0</span> / 5</div>
+      </div>
+
+      <!-- Game Over Screen -->
+      <div id="game-over-screen">
+        <h1>Game Over!</h1>
+        <div class="final-score">Final Score: <span id="final-score">0</span></div>
+        <div class="high-score">High Score: <span id="high-score-display">0</span></div>
+        <button class="start-button" onclick="restartGame()">Play Again</button>
+      </div>
+    </div>
+
+    <script>
+      // Game State
+      let gameState = {
+        score: 0,
+        level: 1,
+        missed: 0,
+        combo: 0,
+        comboTimer: null,
+        customers: [],
+        nextCustomerId: 0,
+        gameActive: false,
+        highScore: localStorage.getItem('haas-high-score') || 0,
+        spawnInterval: null,
+        spawnRate: 2000,
+        maxCustomers: 3
+      };
+
+      // Customer faces
+      const faces = ['😊', '😃', '😄', '😁', '🙂', '😎', '🤓', '👨', '👩', '🧑'];
+
+      // Start game
+      function startGame() {
+        document.getElementById('start-screen').classList.add('hidden');
+        gameState.gameActive = true;
+        gameState.score = 0;
+        gameState.level = 1;
+        gameState.missed = 0;
+        gameState.combo = 0;
+        gameState.customers = [];
+        gameState.spawnRate = 2000;
+        gameState.maxCustomers = 3;
+
+        updateHUD();
+        startSpawning();
+      }
+
+      // Restart game
+      function restartGame() {
+        document.getElementById('game-over-screen').classList.remove('show');
+        // Clear all customers
+        document.querySelectorAll('.customer').forEach(el => el.remove());
+        document.querySelectorAll('.water-particle').forEach(el => el.remove());
+        document.querySelectorAll('.click-effect').forEach(el => el.remove());
+        startGame();
+      }
+
+      // Start spawning customers
+      function startSpawning() {
+        if (gameState.spawnInterval) {
+          clearInterval(gameState.spawnInterval);
+        }
+
+        gameState.spawnInterval = setInterval(() => {
+          if (gameState.gameActive && gameState.customers.length < gameState.maxCustomers) {
+            spawnCustomer();
+          }
+        }, gameState.spawnRate);
+      }
+
+      // Spawn a customer
+      function spawnCustomer() {
+        const customer = {
+          id: gameState.nextCustomerId++,
+          hydration: 0,
+          patience: 100,
+          maxPatience: 100,
+          hydrationNeeded: 3 + Math.floor(gameState.level / 2),
+          patienceDecay: 0.5 + (gameState.level * 0.1)
+        };
+
+        gameState.customers.push(customer);
+
+        const customerEl = document.createElement('div');
+        customerEl.className = 'customer';
+        customerEl.id = `customer-${customer.id}`;
+        customerEl.style.left = `${Math.random() * (window.innerWidth - 120)}px`;
+        customerEl.style.top = `${100 + Math.random() * (window.innerHeight - 300)}px`;
+
+        customerEl.innerHTML = `
+          <div class="customer-avatar">
+            <div class="customer-face">${faces[Math.floor(Math.random() * faces.length)]}</div>
+          </div>
+          <div class="hydration-bar-container">
+            <div class="hydration-bar" id="hydration-${customer.id}"></div>
+          </div>
+          <div class="patience-bar-container">
+            <div class="patience-bar" id="patience-${customer.id}"></div>
+          </div>
+        `;
+
+        customerEl.onclick = () => hydrateCustomer(customer.id);
+
+        document.getElementById('game-container').appendChild(customerEl);
+
+        // Start patience decay
+        const patienceInterval = setInterval(() => {
+          if (!gameState.gameActive) {
+            clearInterval(patienceInterval);
+            return;
+          }
+
+          customer.patience -= customer.patienceDecay;
+          const patienceBar = document.getElementById(`patience-${customer.id}`);
+          if (patienceBar) {
+            patienceBar.style.width = `${customer.patience}%`;
+          }
+
+          if (customer.patience <= 0) {
+            clearInterval(patienceInterval);
+            customerLeft(customer.id);
+          }
+        }, 100);
+      }
+
+      // Hydrate customer
+      function hydrateCustomer(customerId) {
+        const customer = gameState.customers.find(c => c.id === customerId);
+        if (!customer) return;
+
+        customer.hydration++;
+
+        const hydrationBar = document.getElementById(`hydration-${customerId}`);
+        const customerEl = document.getElementById(`customer-${customerId}`);
+
+        if (hydrationBar && customerEl) {
+          const progress = (customer.hydration / customer.hydrationNeeded) * 100;
+          hydrationBar.style.width = `${Math.min(progress, 100)}%`;
+
+          // Create water particles
+          createWaterParticles(customerEl);
+
+          if (customer.hydration >= customer.hydrationNeeded) {
+            customerSatisfied(customerId);
+          }
+        }
+      }
+
+      // Customer satisfied
+      function customerSatisfied(customerId) {
+        const customer = gameState.customers.find(c => c.id === customerId);
+        if (!customer) return;
+
+        // Calculate points
+        const patienceBonus = Math.floor(customer.patience / 10);
+        const points = 100 + patienceBonus;
+
+        gameState.score += points * (gameState.combo > 0 ? gameState.combo : 1);
+        gameState.combo++;
+
+        // Show combo
+        if (gameState.combo > 1) {
+          document.getElementById('combo').style.display = 'block';
+        }
+
+        // Reset combo timer
+        if (gameState.comboTimer) {
+          clearTimeout(gameState.comboTimer);
+        }
+        gameState.comboTimer = setTimeout(() => {
+          gameState.combo = 0;
+          document.getElementById('combo').style.display = 'none';
+          updateHUD();
+        }, 3000);
+
+        // Show score effect
+        const customerEl = document.getElementById(`customer-${customerId}`);
+        if (customerEl) {
+          const rect = customerEl.getBoundingClientRect();
+          showClickEffect(`+${points}`, rect.left + rect.width / 2, rect.top);
+
+          // Remove customer with animation
+          customerEl.style.transition = 'all 0.5s';
+          customerEl.style.transform = 'scale(0) rotate(360deg)';
+          customerEl.style.opacity = '0';
+
+          setTimeout(() => {
+            customerEl.remove();
+          }, 500);
+        }
+
+        // Remove from array
+        gameState.customers = gameState.customers.filter(c => c.id !== customerId);
+
+        updateHUD();
+        checkLevelUp();
+      }
+
+      // Customer left dehydrated
+      function customerLeft(customerId) {
+        const customer = gameState.customers.find(c => c.id === customerId);
+        if (!customer) return;
+
+        gameState.missed++;
+        gameState.combo = 0;
+        document.getElementById('combo').style.display = 'none';
+
+        const customerEl = document.getElementById(`customer-${customerId}`);
+        if (customerEl) {
+          showClickEffect('😢', customerEl.offsetLeft + 40, customerEl.offsetTop);
+          customerEl.style.transition = 'all 0.5s';
+          customerEl.style.opacity = '0';
+          setTimeout(() => customerEl.remove(), 500);
+        }
+
+        gameState.customers = gameState.customers.filter(c => c.id !== customerId);
+
+        updateHUD();
+
+        if (gameState.missed >= 5) {
+          gameOver();
+        }
+      }
+
+      // Create water particles
+      function createWaterParticles(customerEl) {
+        const rect = customerEl.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        for (let i = 0; i < 5; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'water-particle';
+          particle.style.left = `${centerX + (Math.random() - 0.5) * 40}px`;
+          particle.style.top = `${centerY + (Math.random() - 0.5) * 40}px`;
+          document.getElementById('game-container').appendChild(particle);
+
+          setTimeout(() => particle.remove(), 1000);
+        }
+      }
+
+      // Show click effect
+      function showClickEffect(text, x, y) {
+        const effect = document.createElement('div');
+        effect.className = 'click-effect';
+        effect.textContent = text;
+        effect.style.left = `${x}px`;
+        effect.style.top = `${y}px`;
+        document.getElementById('game-container').appendChild(effect);
+
+        setTimeout(() => effect.remove(), 1000);
+      }
+
+      // Check level up
+      function checkLevelUp() {
+        const newLevel = Math.floor(gameState.score / 1000) + 1;
+        if (newLevel > gameState.level) {
+          gameState.level = newLevel;
+
+          // Increase difficulty
+          gameState.spawnRate = Math.max(1000, 2000 - (gameState.level * 100));
+          gameState.maxCustomers = Math.min(6, 3 + Math.floor(gameState.level / 3));
+
+          startSpawning();
+
+          showClickEffect(`Level ${gameState.level}!`, window.innerWidth / 2, window.innerHeight / 2);
+        }
+      }
+
+      // Update HUD
+      function updateHUD() {
+        document.getElementById('score').textContent = gameState.score;
+        document.getElementById('level').textContent = gameState.level;
+        document.getElementById('missed').textContent = gameState.missed;
+        document.getElementById('combo-count').textContent = gameState.combo;
+      }
+
+      // Game over
+      function gameOver() {
+        gameState.gameActive = false;
+
+        if (gameState.spawnInterval) {
+          clearInterval(gameState.spawnInterval);
+        }
+
+        // Update high score
+        if (gameState.score > gameState.highScore) {
+          gameState.highScore = gameState.score;
+          localStorage.setItem('haas-high-score', gameState.highScore);
+        }
+
+        document.getElementById('final-score').textContent = gameState.score;
+        document.getElementById('high-score-display').textContent = gameState.highScore;
+        document.getElementById('game-over-screen').classList.add('show');
+
+        // Clear all customers
+        gameState.customers.forEach(customer => {
+          const el = document.getElementById(`customer-${customer.id}`);
+          if (el) el.remove();
+        });
+        gameState.customers = [];
+      }
+
+      // Display high score on start screen
+      document.getElementById('high-score-display').textContent = gameState.highScore;
+    </script>
   </body>
 </html>
